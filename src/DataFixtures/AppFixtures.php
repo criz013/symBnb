@@ -27,9 +27,9 @@ class AppFixtures extends Fixture
                 ->setRooms( mt_rand( 1,6 ) )
                 ->setCoverImage( $faker->imageUrl(1000,350) );
 
-            $manager->persist( $ad );
+            $manager ->persist( $ad );
         }
 
-        $manager->flush();
+        $manager ->flush();
     }
 }
