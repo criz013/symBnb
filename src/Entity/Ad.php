@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Ad
 {
@@ -50,6 +52,18 @@ class Ad
      * @ORM\Column(type="integer")
      */
     private $rooms;
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function initialyzeSlug(){
+        if( empty($this->slug)) {
+            $slugly = new Slugify();
+            $this->slug = $slugly->slugify($this->title);
+        }
+    }
 
     public function getId(): ?int
     {

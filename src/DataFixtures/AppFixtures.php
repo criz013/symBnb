@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Ad;
-use Cocur\Slugify\Slugify;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -19,12 +18,10 @@ class AppFixtures extends Fixture
 
             $title = $faker->sentence();
             $ad = new Ad();
-            $slug = $slugify->slugify( $title );
 
             $t = '<p>' . join('</p><p>' , $faker->paragraphs(5) ) . '</p>';
 
             $ad ->setTitle( $title )
-                ->setSlug( $slug )
                 ->setContent( $t )
                 ->setIntroduction( $faker->paragraph(2) )
                 ->setPrice( mt_rand( 40,1000 ) )
