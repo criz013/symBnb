@@ -18,9 +18,22 @@ class AdController extends AbstractController
     public function index(AdRepository $repo)
     {
         $ads = $repo->findAll();
-        return $this->render('ad/index.html.twig', [
-            'ads' => $ads,
-        ]);
+        return $this->render('ad/index.html.twig', ['ads' => $ads,]);
+    }
+
+    /**
+     * @Route("/ad/new", name="ad_new")
+     */
+    public function create(){
+        $form = $this->createFormBuilder()
+        ->add('title')
+        ->add('introduction')
+        ->add('content')
+        ->add('rooms')
+        ->add('price')
+        ->add('coverImage')
+        ->getForm();
+      return  $this->render("ad/new.html.twig", [ 'form' => $form->createView() ] );
     }
 
     /**
@@ -32,4 +45,6 @@ class AdController extends AbstractController
 
         return $this->render('ad/show.html.twig',[ 'ad' => $ad ]);
     }
+
+
 }
