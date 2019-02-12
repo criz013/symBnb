@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Ad;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+/**
+ * Class AnnonceType
+ * @package App\Form
+ */
+class AnnonceType extends AbstractType
+{
+
+    /**
+     * Configuration de base d'un champ
+     *
+     * @param string $label
+     * @param string $placeholder
+     *
+     * @return array
+     */
+    public function getConfiguration($label, $placeholder){
+        return [
+            'label'=>$label,
+            'attr'=> [ 'placeholder'=>$placeholder]
+        ];
+    }
+
+    /**
+     * Formulaire d'une nouvelle annonce
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', TextType::class, $this->getConfiguration("Titre","Tapez un titre pour votre annonce."))
+            ->add('slug', TextType::class,$this->getConfiguration("Adresse Web","Tapez l'adresse web (Automatique)."))
+            ->add('coverImage', UrlType::class, $this->getConfiguration("URL de l'image principal","L'image principal de votre annonce"))
+            ->add('introduction', TextType::class, $this->getConfiguration("Introduction","Donner une description global de l'annonce"))
+            ->add('content', TextareaType::class, $this->getConfiguration("Description detaillee","Donner une description qui donne envis"))
+            ->add('rooms', IntegerType::class, $this->getConfiguration("Nombre de chambres","Le nombre de chambre disponible"))
+            ->add('price', MoneyType::class, $this->getConfiguration("Prix par nuit","Donner un prix pour une nuit"));
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Ad::class,
+        ]);
+    }
+}
