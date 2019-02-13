@@ -6,6 +6,7 @@ use App\Entity\Ad;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,12 +27,23 @@ class AdController extends AbstractController
     /**
      * @Route("/ad/new", name="ad_new")
      */
-    public function create(){
+    public function create(Request $request){
 
         $ad = new Ad();
 
         $form = $this->createForm(AnnonceType::class, $ad);
+        $form->handleRequest($request);
 
+
+        if( $form->isSubmitted() && $form->isValid()){
+            $manager = $this->getDoctrine()->getManager();
+
+            $manager->persist($ad);
+            $manager->flush();
+            $this->addFlash("success" , "l'annonce bien ete valider");
+
+            return $this->redirectToRoute('ad_show', ['slug' => $ad->getSlug()]);
+        }
 
       return  $this->render("ad/new.html.twig", [ 'form' => $form->createView() ] );
 
