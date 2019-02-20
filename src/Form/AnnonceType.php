@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Ad;
+use App\Form\ImageType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -48,8 +50,10 @@ class AnnonceType extends AbstractType
             ->add('coverImage', UrlType::class, $this->getConfiguration("URL de l'image principal","L'image principal de votre annonce"))
             ->add('introduction', TextType::class, $this->getConfiguration("Introduction","Donner une description global de l'annonce"))
             ->add('content', TextareaType::class, $this->getConfiguration("Description detaillee","Donner une description qui donne envis"))
-            ->add('rooms', IntegerType::class, $this->getConfiguration("Nombre de chambres","Le nombre de chambre disponible"))
-            ->add('price', MoneyType::class, $this->getConfiguration("Prix par nuit","Donner un prix pour une nuit"));
+            ->add('rooms', IntegerType::class, $this->getConfiguration("Nombre de chambres","Le nombre de chambre disponiblephp"))
+            ->add('price', MoneyType::class, $this->getConfiguration("Prix par nuit","Donner un prix pour une nuit"))
+            ->add('images',CollectionType::class, ['entry_type' => ImageType::class])
+        ;
     }
 
     /**

@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Creation d'une annonce{% endblock %}
 
+{% form_theme form _self %}
+
 {% block body %}
     <div class="container">
         <h1>Creer une nouvelle annonce.</h1>
@@ -11,4 +13,11 @@
         {{  form_end(form) }}
 
     </div>
+{% endblock %}
+
+{% block _ad_images_widget %}
+
+    <p>Ici, vous pouvez ajouter vos propres images !</p>
+    {{  form_widget(form) }}
+
 {% endblock %}
