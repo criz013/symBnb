@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
-use App\Entity\Image;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -35,20 +34,19 @@ class AdController extends AbstractController
 
         $ad = new Ad();
 
-        $image = new Image();
-        $image->setUrl('http://');
-        $image->setCaption('Image 1');
-
-        $ad->addImage($image);
-
         $form = $this->createForm(AnnonceType::class,$ad);
 
         $form->handleRequest($request);
 
 
         if( $form->isSubmitted() && $form->isValid()){
+
            $manager = $this->getDoctrine()->getManager();
 
+            foreach ( $ad->getImages() as $image) {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
             $manager->persist($ad);
             $manager->flush();
             $this->addFlash("success" , "l'annonce bien ete valider");
@@ -58,6 +56,34 @@ class AdController extends AbstractController
 
       return  $this->render("ad/new.html.twig", [ 'form' => $form->createView() ] );
 
+    }
+
+    /**
+     * @Route("/ads/edit/{slug}", name="ad_edit")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function edit(Ad $ad, Request $request,ObjectManager $manager){
+
+        $form = $this->createForm(AnnonceType::class, $ad);
+
+        $form->handleRequest($request);
+
+        if( $form->isSubmitted() && $form->isValid()){
+
+            foreach ( $ad->getImages() as $image) {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+            $manager->persist($ad);
+            $manager->flush();
+            $this->addFlash("success" , "l'annonce bien ete valider");
+
+            return $this->redirectToRoute('ad_show', [ 'slug' => $ad->getSlug() ]);
+        }
+
+        return $this->render('ad/edit.html.twig',['form'=>$form->createView(),
+            'ad'=>$ad]);
     }
 
     /**
