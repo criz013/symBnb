@@ -7,6 +7,7 @@ use App\Form\AccountType;
 use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
 use App\Form\PasswordUpdateType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -94,7 +95,7 @@ class AccountController extends AbstractController
      *
      * @return Response
      */
-    public function updatePassword( Requests $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder ){
+    public function updatePassword( Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder ){
 
         $user = $this->getUser();
         $passwordupdate = new PasswordUpdate();
