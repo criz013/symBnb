@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Ad;
 use App\Form\ImageType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -18,23 +17,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class AnnonceType
  * @package App\Form
  */
-class AnnonceType extends AbstractType
+class AnnonceType extends ApplicationType
 {
-
-    /**
-     * Configuration de base d'un champ
-     *
-     * @param string $label
-     * @param string $placeholder
-     *
-     * @return array
-     */
-    public function getConfiguration($label, $placeholder, $option =[]){
-        return array_merge([
-                    'label'=>$label,
-                    'attr'=> [ 'placeholder' => $placeholder ]
-                ], $option);
-    }
 
     /**
      * Formulaire d'une nouvelle annonce

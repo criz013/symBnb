@@ -7,16 +7,24 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('homepage') }}">Accueil</a>
+                <a class="nav-link" href="{{ path( 'homepage' ) }}">Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('ads_index') }}">Annonces</a>
+                <a class="nav-link" href="{{ path( 'ads_index' ) }}">Annonces</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+        {% if app.user %}
             <li class="nav-item">
-                <a href="#" class="nav-link">Mon Compte</a>
+                <a href="{{ path( 'account_logout' ) }}" class="nav-link">Deconnection</a>
             </li>
+        {% else %}
+            <li class="nav-item">
+                <a href="{{ path( 'account_login' ) }}" class="nav-link">Connection</a>
+            </li><li class="nav-item">
+                <a href="{{ path( 'account_register' ) }}" class="nav-link">Inscription</a>
+            </li>
+        {% endif %}
         </ul>
     </div>
 </nav>
