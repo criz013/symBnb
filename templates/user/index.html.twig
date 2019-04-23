@@ -1,0 +1,38 @@
+
+{% extends 'base.html.twig' %}
+{% block 'title' %}Profil de {{ user.getFullName }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row align-item-center">
+            <div class="col-3 text-center">
+                <img src="{{ user.picture }}" class="mb-3" alt="Avatar de {{ user.getFullName }}">
+                <br>
+                <span class="badge badge-primary">{{ user.ads | lengh }}</span>
+            </div>
+            <div class="col-9">
+            <h1>{{ user.getFullName }}</h1>
+                <div class="mt-3">
+                    <a href="{{ path('account_profil') }}" class="btn btn-primary mr-2 mb-2">Modifier mon Profil</a>
+                    <a href="{{ path('account_password') }}" class="btn btn-primary mb-2">Modifier mon mot de passe</a>
+                </div>
+            </div>
+        </div>
+
+        {{ user.description | raw }}
+        <hr>
+        <h2>Les annonces de {{ user.getFullName }}</h2>
+        {% if user.ads | length > 0 %}
+            <div class="row">
+                {% for ad in user.ads %}
+                    {% include 'ad/_ad.hrmltwig' %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warnig">
+                 <p><strong>{{user.getFullName}}</strong> n'as pas encore d annonces </p>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

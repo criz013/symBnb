@@ -50,20 +50,19 @@
             </div>
             <div class="col">
                 <div class="row">
+                {% set author = ad.author %}
                     <div class="col-4">
-                        <img src="http://placehold.it/64x64" alt="Avatar de christophe ">
+                    <a href="{{ path( 'user_show', { 'slug': author.slug } ) }}">
+                        <img src="{{ author.picture }}" class="avatar avatar-medium" alt="Avatar de {{ author.getFullName }} "></a>
                     </div>
                     <div class="col">
-                        <h3>Christophe Dupont</h3>
-                        <span class="badge badge-primary">3 Annonces</span>
+                        <a href="{{ path( 'user_show', { 'slug': author.slug } ) }}">
+                            <h3>{{ author.getFullName }}</h3>
+                        </a>
+                        <span class="badge badge-primary">{{ author.ads | length }} Annonces</span>
                     </div>
                 </div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis culpa eos esse eum expedita
-                    perferendis quasi? Accusantium, consequuntur officiis.</p>
-                <p>Ab, dignissimos dolorem? Ab aut blanditiis deserunt eligendi, error est laudantium non officia quae
-                    quam tempora, ut? Ea modi, reprehenderit!</p>
-                <p>Dolor eius esse, et eum facilis fugit, minus porro quis saepe sit tempore veniam, voluptates? Ab
-                    inventore modi qui sed!</p>
+                {{ author.introduction | raw }}
             </div>
         </div>
     </div>
