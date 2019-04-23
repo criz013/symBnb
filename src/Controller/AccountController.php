@@ -47,7 +47,7 @@ class AccountController extends AbstractController
             $hash = $encoder->encodePassword( $user, $user->getHash() );
             $user->setHash( $hash );
 
-            $manager->persist( user );
+            $manager->persist( $user );
             $manager->flush();
 
             $this->addFlash( 'success', 'Votre compte a bien ete creer.' );
@@ -71,12 +71,15 @@ class AccountController extends AbstractController
      * @Route("/account/profil", name="account_profil")
      * @return Response
      */
-    public function profil( Request $request, ObjectManager $manager ){
+    public function profil( ObjectManager $manager, Request $request ){
+
         $user = $this->getUser();
         $form = $this->createForm( AccountType::class, $user );
+        $form->handleRequest( $request );
 
         if( $form->isSubmitted() && $form->isValid() ){
-            $manager->persis( $user ); 
+
+            $manager->persist( $user ); 
             $manager->flush();
 
             $this->addFlash(
@@ -100,6 +103,7 @@ class AccountController extends AbstractController
         $user = $this->getUser();
         $passwordupdate = new PasswordUpdate();
         $form = $this->createForm( PasswordUpdateType::class, $passwordupdate );
+        $form->handleRequest( $request );
 
         if( $form->isSubmitted() && $form->isValid() ){
             if( $encoder->isPasswordValid( $user, $passwordupdate->getOldPassword() ) ){
@@ -111,7 +115,7 @@ class AccountController extends AbstractController
                 $manager->persist( $user );
                 $manager->flush();
 
-                $this-addFlash(
+                $this->addFlash(
                     'succes',
                     'Votre mot de passe à bien été modifié !'
                 );
@@ -128,11 +132,11 @@ class AccountController extends AbstractController
     }
 /**
  * 
- * @Route( '/acount', 'account_index' )
+ * @Route( "/acount", name="account_index" )
  * @return Response
  */
     public function myAccount(){
-        return $this->render('user/user.html.twig',
+        return $this->render('user/index.html.twig',
             [
                 'user' => $this->getUser()
             ]

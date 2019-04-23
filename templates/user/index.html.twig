@@ -1,31 +1,31 @@
 
 {% extends 'base.html.twig' %}
-{% block 'title' %}Profil de {{ user.getFullName }}{% endblock %}
-
+{% block title %}Profil de {{ user.getFullName }}{% endblock %}
 {% block body %}
     <div class="container">
-        <div class="row align-item-center">
+        <div class="row align-items-center">
             <div class="col-3 text-center">
-                <img src="{{ user.picture }}" class="mb-3" alt="Avatar de {{ user.getFullName }}">
+                <img src="{{ user.picture }}" class="mb-3 avatar avatar-medium" alt="Avatar de {{ user.getFullName }}">
                 <br>
-                <span class="badge badge-primary">{{ user.ads | lengh }}</span>
+                <span class="badge badge-primary">{{ user.ads | length }} annonces</span>
             </div>
             <div class="col-9">
-            <h1>{{ user.getFullName }}</h1>
-                <div class="mt-3">
-                    <a href="{{ path('account_profil') }}" class="btn btn-primary mr-2 mb-2">Modifier mon Profil</a>
-                    <a href="{{ path('account_password') }}" class="btn btn-primary mb-2">Modifier mon mot de passe</a>
-                </div>
+                <h1>{{ user.getFullName }}</h1>
+                {% if app.user is same as(user) %}
+                    <div class="mt-3">
+                        <a href="{{ path('account_profil') }}" class="btn btn-primary mr-2 mb-2">Modifier mon Profil</a>
+                        <a href="{{ path('account_password') }}" class="btn btn-primary mb-2">Modifier mon mot de passe</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
-
         {{ user.description | raw }}
         <hr>
-        <h2>Les annonces de {{ user.getFullName }}</h2>
+        <h2 class="text-center">Les annonces de {{ user.getFullName }}</h2>
         {% if user.ads | length > 0 %}
             <div class="row">
                 {% for ad in user.ads %}
-                    {% include 'ad/_ad.hrmltwig' %}
+                    {% include 'ad/_ad.html.twig' %}
                 {% endfor %}
             </div>
         {% else %}

@@ -47,12 +47,14 @@ class AdController extends AbstractController
                 $image->setAd($ad);
                 $manager->persist($image);
             }
-            $ad->setAuthor($this->getUser);
+
+            $ad->setAuthor( $this->getUser() );
+
             $manager->persist($ad);
             $manager->flush();
             $this->addFlash("success" , "l'annonce bien ete valider");
 
-            return $this->redirectToRoute('ad_show', ['slug' => $ad->getSlug()]);
+            return $this->redirectToRoute('ad_show', [ 'slug' => $ad->getSlug() ]);
         }
 
       return  $this->render("ad/new.html.twig", [ 'form' => $form->createView() ] );

@@ -104,7 +104,7 @@ class Users implements UserInterface
     }
 
     public function getFullName(){
-        return "{$this->firstname} {$this->getLastname}";
+        return "$this->firstname $this->lastname";
     }
 
     public function getFirstname(): ?string
