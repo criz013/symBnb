@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -69,6 +70,7 @@ class AccountController extends AbstractController
     /**
      * 
      * @Route("/account/profil", name="account_profil")
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function profil( ObjectManager $manager, Request $request ){
@@ -95,7 +97,7 @@ class AccountController extends AbstractController
     /**
      * 
      * @Route("/account/password-update", name="account_password")
-     *
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function updatePassword( Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder ){
@@ -133,10 +135,11 @@ class AccountController extends AbstractController
 /**
  * 
  * @Route( "/acount", name="account_index" )
+ * @IsGranted("ROLE_USER")
  * @return Response
  */
     public function myAccount(){
-        return $this->render('user/index.html.twig',
+        return $this->render( 'user/index.html.twig',
             [
                 'user' => $this->getUser()
             ]
