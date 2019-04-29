@@ -19,8 +19,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AccountController extends AbstractController
 {
     /**
+     * Page login
+     * 
+     * @param AuthenticationUtils $utils
+     * @return Response
+     * 
      * @Route("/login", name="account_login")
      */
+
     public function login( AuthenticationUtils $utils )
     {
         $error = $utils->getLastAuthenticationError();
@@ -34,7 +40,13 @@ class AccountController extends AbstractController
     }
 
     /**
+     * Page register
      *
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param UserPasswordEncoderInterface $encoder
+     * @return Response
+     * 
      * @Route("/register", name="account_register")
      */
     public function register( Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder ){
@@ -63,6 +75,8 @@ class AccountController extends AbstractController
     }
 
     /**
+     * Page logout
+     * 
      * @Route("/logout", name="account_logout")
      */
     public function logout(){}
@@ -132,6 +146,7 @@ class AccountController extends AbstractController
         ]
      );
     }
+    
 /**
  * 
  * @Route( "/acount", name="account_index" )

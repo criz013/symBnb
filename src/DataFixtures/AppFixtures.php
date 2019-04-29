@@ -7,6 +7,7 @@ use Faker\Factory;
 use App\Entity\Role;
 use App\Entity\Image;
 use App\Entity\Users;
+use App\Entity\Booking;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -15,56 +16,56 @@ class AppFixtures extends Fixture
 {
     private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct( UserPasswordEncoderInterface $encoder )
     {
         $this->encoder = $encoder;
     }
 
-    public function load(ObjectManager $manager)
+    public function load( ObjectManager $manager )
     {
-        $faker = Factory::create('fr-FR');
+        $faker = Factory::create( 'fr-FR' );
 
         $adminRole = new Role();
-        $adminRole->setTitle('ROLE_ADMIN');
-        $manager->persist($adminRole);
-
+        $adminRole->setTitle( 'ROLE_ADMIN' );
+        $manager->persist( $adminRole );
+        //création de l'utilisateur admin
         $adminUser = new Users();
         $adminUser ->setFirstname( 'Christophe' )
                    ->setLastname( 'Bautista' )
                    ->setEmail( 'christophe@symfony.com' )
                    ->setIntroduction( $faker->paragraph(2) )
                    ->setDescription( $faker->paragraph(2) )
-                   ->setHash( $this->encoder->encodePassword($adminUser,'password') )
-                   ->setPicture("https://randomuser.me/api/portraits/male/1.jpg")
-                   ->addUserRole($adminRole);
+                   ->setHash( $this->encoder->encodePassword( $adminUser,'password' ) )
+                   ->setPicture( "https://randomuser.me/api/portraits/male/1.jpg" )
+                   ->addUserRole( $adminRole );
 
-                   $manager->persist($adminUser);
+                   $manager->persist( $adminUser );
 
         $genres = ['male', 'female'];
         $users = [];
 
-        for ($i =1; $i <= 10; $i++){
+        //gestion des users
+        for ( $i =1; $i <= 10; $i++ ){
              $user = new Users();
-             $genre = $faker->randomElement($genres);
+             $genre = $faker->randomElement( $genres );
 
              $picture = "https://randomuser.me/api/portraits/";
-             $pictureId = $faker->numberBetween(1,99).'.jpg';
+             $pictureId = $faker->numberBetween( 1,99 ).'.jpg';
 
-            $avatar = $picture . ($genre == 'male' ? 'men/' : 'women/') . $pictureId;
+            $avatar = $picture . ( $genre == 'male' ? 'men/' : 'women/' ) . $pictureId;
 
-             $user ->setFirstname( $faker->firstName($genre) )
+             $user ->setFirstname( $faker->firstName( $genre ) )
                    ->setLastname( $faker->lastName() )
                    ->setEmail( $faker->email() )
                    ->setIntroduction( $faker->paragraph(2) )
                    ->setDescription( $faker->paragraph(2) )
-                   ->setHash( $this->encoder->encodePassword($user,'password') )
-                   ->setPicture($avatar);
+                   ->setHash( $this->encoder->encodePassword( $user,'password' ) )
+                   ->setPicture( $avatar );
 
-
-             $manager->persist($user);
+             $manager->persist( $user );
              $users[] = $user;
         }
-
+        //Gestion des annonces
         for( $i = 1; $i < 31; $i++ ){
 
             $title = $faker->sentence();
@@ -79,23 +80,46 @@ class AppFixtures extends Fixture
                 ->setIntroduction( $faker->paragraph(2) )
                 ->setPrice( mt_rand( 40,1000 ) )
                 ->setRooms( mt_rand( 1,6 ) )
-                ->setCoverImage( $faker->imageUrl(1000,350) )
-                ->setAuthor( $user);
+                ->setCoverImage( $faker->imageUrl( 1000,350 ) )
+                ->setAuthor( $user );
 
-            for($j=1;$j <= (mt_rand ( 2,6));$j++ ){
+            for($j=1;$j <= ( mt_rand ( 2,6 ) );$j++ ){
                 $image = new Image();
 
-                $image ->setUrl( $faker->imageUrl())
+                $image ->setUrl( $faker->imageUrl() )
                        ->setCaption( $faker->sentence() )
-                       ->setAd($ad);
+                       ->setAd( $ad );
 
-                $manager->persist($image);
+                $manager->persist( $image );
 
             }
+            //Gestion des réservations
+            for( $j = 1; $j<= mt_rand( 0,10 ); $j++ ){
+                $booking = new Booking();
 
-            $manager ->persist( $ad );
+                $createAt = $faker->dateTimeBetween( '-6 months' );
+                $startDate = $faker->dateTimeBetween( '-3 months' );
+
+                $duration = mt_rand(3,10);
+
+                $endDate = ( clone $startDate )->modify( "+$duration days" );
+
+                $amount = $ad->getPrice() * $duration;
+                $booker = $users[ mt_rand( 0, count( $users ) -1 ) ];
+
+                $booking->setBooker( $booker )
+                        ->setAd( $ad )
+                        ->setStartDate( $startDate )
+                        ->setEndDate( $endDate )
+                        ->setCreateAt( $createAt )
+                        ->setAmount( $amount );
+
+                $manager->persist( $booking );
+            }
+
+            $manager->persist( $ad );
         }
 
-        $manager ->flush();
+        $manager->flush();
     }
 }
