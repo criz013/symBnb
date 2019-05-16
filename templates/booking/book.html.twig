@@ -1,24 +1,46 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Réserver l'annonce: {{ ad.tilte }} !{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" />
+{% endblock %}
+{% block title %}Réserver l'annonce: {{ ad.title }} !{% endblock %}
 
 {% block body %}
     <div class="container">
-    <h1>Réserver l'annonce: {{ ad.tilte }}</h1>
-    <p>Vous êtes sur le point de réserver le bien de <strong>{{ ad.getFullName }}</strong>, dite nous tous, on s'occuper du reste!
-    
-    </p>
-    {{ form_start( form ) }}
-    <div class="alert alert-light">
-        <h2>Commencez par nous dire quelles sont les dates qui  vous intérressent !</h2>
-        <div class="row">
-            <div class="col">{{ form.startDate }}</div>
-            <div class="col">{{ form.endDate }}</div>
+        <h1>Réserver l'annonce: {{ ad.title }}</h1>
+        <p>
+        Vous êtes sur le point de réserver le bien de <strong>{{ ad.author.FullName }}</strong>, dite nous tous, on s'occuper du reste!
+        </p>
+        {{ form_start( form ) }}
+        <div class="alert alert-light">
+            <h2>Commencez par nous dire quelles sont les dates qui  vous intérressent !</h2>
+            <div class="row">
+                <div class="col">{{ form_row( form.startDate ) }}</div>
+                <div class="col">{{ form_row( form.endDate ) }}</div>
+            </div>
         </div>
-    </div>
-    <h4>Montant du séjour: <span id="amout">..</span> &euro;</h4>
-    <span id="days">0</span> nuit(s) à {{ ad.price }} / nuit
+        <h4>Montant du séjour: <span id="amout">..</span> &euro;</h4>
+        <span id="days">0</span> nuit(s) à {{ ad.price }} / nuit
 
-    {{ form_end( form ) }}
+        <h2>Vous avez un commentaire</h2>
+        {{ form_row( form.comment ) }}
+
+        <h2>Vous avez termine !</h2>
+        <button type="submit" class="btn btn-success">Je reserve !</button>
+        {{ form_end( form ) }}
     </div>
+{% endblock %}
+{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+ $('#booking_startDate,#booking_endDate').datepicker({
+     format: 'dd/mm/yyyy',
+     datesDisabled: [
+         {% for day in ad.notAvailableDays%}
+            "{{ day.format('d/m/Y') }}",
+         {% endfor %}
+     ],
+     startDate: new Date
+ });
+   
+</script>
 {% endblock %}

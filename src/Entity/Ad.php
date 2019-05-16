@@ -97,6 +97,30 @@ class Ad
         }
     }
 
+    /**
+     * Calcule le nombre de jour, et retourne les dates reservees.
+     *
+     * @return void
+     */
+    public function getNotAvailableDays(){
+        $notAvailabledays = [];
+
+        foreach( $this->bookings as $booking ){
+            //calculer les jours qui se trouvent entre la date d'arrive et la date de depart
+            $resultat = range( $booking->getStartDate()->getTimestamp(),
+                              $booking->getEndDate()->getTimestamp(),
+                              60 * 60 * 24
+        ); 
+
+        $days = array_map( function( $daysTimestamp ){
+                    return new \DateTime( date( 'Y-m-d', $daysTimestamp ) );
+                }, $resultat );
+        $notAvailabledays = array_merge( $notAvailabledays,$days );
+
+        return $notAvailabledays;
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;

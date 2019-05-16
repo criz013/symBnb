@@ -3,9 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BookingRepository")
+ * @ORM\HasLifecycleCallbacks()
+ * 
  */
 class Booking
 {
@@ -13,6 +18,7 @@ class Booking
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
      */
     private $id;
 
@@ -30,11 +36,13 @@ class Booking
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date(message="Attention la date d'arrive doit etre au bon format")
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date(message="Attention la date de depart doit etre au bon format")
      */
     private $endDate;
 
@@ -47,6 +55,70 @@ class Booking
      * @ORM\Column(type="float")
      */
     private $amount;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $comment;
+
+    /**
+     * Undocumented function
+     * @ORM\PrePersist
+     * @return void
+     */
+    public function prePersist(){
+        if( empty( $this->createAt ) ){
+                $this->createAt = new \DateTime();
+        }
+
+        if( empty( $this->amount ) ){
+            $this->amount = $this->getDuration() * $this->ad->getPrice();
+        }
+    }
+
+    public function getDuration(){
+        $diff = $this->endDate->diff( $this->startDate );
+        return $diff->days;
+    }
+
+    public function isbookableDate(){
+
+        //Il faut connaitre les dates qui sont impossible pour l'annonce
+        $notAvailableDays = $this->ad->getNotAvailableDays();
+
+        //il faut comparer les dates choisie avec les dates impossible
+        $bookingDays = $this->getDays();
+
+        //Tableau de chaine de caractere de mes journees
+        $days = array_map( function($days){
+            return $days->format('Y-m-d');
+        },$bookingDays );
+
+        $notAvailable = array_map(function($days){
+            return $days->format('Y-m-d');
+        }, $notAvailableDays);
+
+        foreach ($days as $day){
+            if( array_search( $day,$notAvailable ) !== false ) return false;
+        }
+        return true;
+    }
+    /**
+     * Undocumented function
+     *
+     * @return Array
+     */
+    public function getDays(){
+
+        $resultat = range( $this->startDate->getTimestamp(),
+                           $this->endDate->getTimestamp(),
+                           24 * 60 * 60
+                        );
+        $days = array_map( function( $dayTimeStamp ){
+                return new \DateTime( date( 'Y-m-d',$dayTimeStamp ) );
+                }, $resultat );
+        return $days;
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +193,18 @@ class Booking
     public function setAmount(float $amount): self
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

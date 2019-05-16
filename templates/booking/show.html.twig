@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation N: {{ booking.id }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Votre réservation N: {{ booking.id }}</h1>
+    {% if app.request.query.get('withAlert') %}
+        <div class="alert alert-success">
+            <h4 class="alert-heading">Bravo !</h4>
+            <p>Votre reservation aupres de {{ booking.ad.author.fullName }} a bien ete prise en compte.</p>
+        </div>
+    {% endif %}
+    <div class="col-5">
+        <div class="alert alert-light">
+            <h2>Detail</h2>
+                <dl class="row">
+                    <dt class="col-md-4">Numeros</dt>
+                    <dd class="col-md-8">{{ booking.id }}</dd>
+                    <dt class="col-md-4">date d arriver</dt>
+                    <dd class="col-md-8">{{ booking.startDate | date( 'd/m/y' ) }}</dd>
+                    <dt class="col-md-4">Date de depart</dt>
+                    <dd class="col-md-8">{{ booking.endDate | date( 'd/m/y' ) }}</dd>
+                    <dt class="col-md-4">Nombre de nuit</dt>
+                    <dd class="col-md-8">{{ booking.duration }}</dd>
+                    <dt class="col-md-4">Montant Total</dt>
+                    <dd class="col-md-8">{{ booking.amount }}</dd>
+                    <dt class="col-md-4">Commentaire</dt>
+                    <dd class="col-md-8">{{ booking.comment }}</dd>
+                </dl>
+                <hr>
+                <h2 class="alert-heading">Votre hote</h2>
+            <div class="row mb-3">
+                    <div class="col-3">
+                        <img src="{{ booking.ad.author.picture }}" alt="Avatar de {{ booking.ad.author.fullName }}" class="avatar avatar-medium">
+                    </div>
+                    <div class="col-9">
+                        <h4><a href="{{ path( 'user_show', { 'slug': booking.ad.author.slug } ) }}">{{ booking.ad.author.fullName }}</a></h4>
+                        <span class="badge badge-primary">{{ booking.ad.author.ads | length }} annonces</span>
+                    </div>
+            </div>
+            {{ booking.ad.author.description | raw }}
+             <a href="{{ path( 'user_show', { 'slug': booking.ad.author.slug } ) }}" class="btn btn-primary">Plus d'info sur {{ booking.ad.author.lastName }}</a>
+        </div>
+    </div>
+        <div class="col">
+            <h2>Votre Hebergement</h2>
+            <h4><a href="{{ path('ad_show', { 'slug': booking.ad.slug } ) }}" class=''>{{booking.ad.title}}</a></h4>
+            <img src="{{ booking.ad.coverImage }}" alt="{{ booking.ad.title }}" class="img-fluid">
+            {{ booking.ad.content | raw }}
+            <a href="{{ path('ad_show', { 'slug': booking.ad.slug }) }}" class="btn btn-rimary">Plus d'information</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
