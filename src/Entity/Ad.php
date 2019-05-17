@@ -98,7 +98,7 @@ class Ad
     }
 
     /**
-     * Calcule le nombre de jour, et retourne les dates reservees.
+     * Calcule le nombre de jour, et retourne les dates réservees.
      *
      * @return void
      */
@@ -107,18 +107,18 @@ class Ad
 
         foreach( $this->bookings as $booking ){
             //calculer les jours qui se trouvent entre la date d'arrive et la date de depart
-            $resultat = range( $booking->getStartDate()->getTimestamp(),
-                              $booking->getEndDate()->getTimestamp(),
-                              60 * 60 * 24
+            $resultat = range( $booking->getStartDate()->getTimestamp(), 
+                               $booking->getEndDate()->getTimestamp(),
+                               60 * 60 * 24 
         ); 
+ 
 
         $days = array_map( function( $daysTimestamp ){
                     return new \DateTime( date( 'Y-m-d', $daysTimestamp ) );
                 }, $resultat );
-        $notAvailabledays = array_merge( $notAvailabledays,$days );
-
+        $notAvailabledays = array_merge_recursive( $notAvailabledays, $days );
+        }     
         return $notAvailabledays;
-        }
     }
 
     public function getId(): ?int

@@ -36,13 +36,15 @@ class Booking
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\Date(message="Attention la date d'arrive doit etre au bon format")
+     * @Assert\Date(message="Attention la date d'arrive doit etre au bon format!")
+     * @Assert\GreaterThan("today", message="La date d'arrivée doit être ultérieure à la date d'aujourd'hui !", groups={"front"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Date(message="Attention la date de depart doit etre au bon format")
+     * @Assert\GreaterThan(propertyPath="startDate",message="La date de départ doit être supérieur à la dâte d'arriver")
      */
     private $endDate;
 
@@ -63,7 +65,9 @@ class Booking
 
     /**
      * Undocumented function
+     *
      * @ORM\PrePersist
+     *
      * @return void
      */
     public function prePersist(){
@@ -81,25 +85,23 @@ class Booking
         return $diff->days;
     }
 
-    public function isbookableDate(){
+    public function isbookableDates(){
 
         //Il faut connaitre les dates qui sont impossible pour l'annonce
         $notAvailableDays = $this->ad->getNotAvailableDays();
-
+        
         //il faut comparer les dates choisie avec les dates impossible
         $bookingDays = $this->getDays();
-
         //Tableau de chaine de caractere de mes journees
-        $days = array_map( function($days){
-            return $days->format('Y-m-d');
-        },$bookingDays );
-
-        $notAvailable = array_map(function($days){
-            return $days->format('Y-m-d');
-        }, $notAvailableDays);
+        $formatDay = function($day){
+            return $day->format('Y-m-d');
+        };
+        // Tableau des chaines de caractères de mes journées
+        $days           = array_map($formatDay, $bookingDays);
+        $notAvailable   = array_map($formatDay, $notAvailableDays);
 
         foreach ($days as $day){
-            if( array_search( $day,$notAvailable ) !== false ) return false;
+            if( array_search( $day, $notAvailable ) !== false ) return false;
         }
         return true;
     }
@@ -115,7 +117,7 @@ class Booking
                            24 * 60 * 60
                         );
         $days = array_map( function( $dayTimeStamp ){
-                return new \DateTime( date( 'Y-m-d',$dayTimeStamp ) );
+                return new \DateTime( date( 'Y-m-d', $dayTimeStamp ) );
                 }, $resultat );
         return $days;
     }

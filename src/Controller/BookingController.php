@@ -32,8 +32,8 @@ class BookingController extends AbstractController
 
             $booking->setBooker( $user )
                     ->setAd( $ad );
-            
-                    if( !$booking->isbookableDate() ){
+                   
+                    if( !$booking->isbookableDates() ){
                         $this->addFlash( 'warning',
                                          'Les dates choisie pour votre sejour sont deja prise'
                                        );
@@ -43,7 +43,7 @@ class BookingController extends AbstractController
 
                     return $this->redirectToRoute( 'booking_show', [ 'id' => $booking->getId(), 'withAlert' => true ] );
                     }  
-                    }
+        }
            
         
         return $this->render( 'booking/book.html.twig', [

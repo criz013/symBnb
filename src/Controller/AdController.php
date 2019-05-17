@@ -64,8 +64,11 @@ class AdController extends AbstractController
     }
 
     /**
+     * Modifier une annonce d'un utilisateur identifier
+     *
      * @Route("/ads/edit/{slug}", name="ad_edit")
      * @Security("is_granted('ROLE_USER') and user === ad.getAuthor()", message="Vous n'avez pas accee a cet annonce deso !" )
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit( Ad $ad, Request $request, ObjectManager $manager ){
@@ -94,7 +97,9 @@ class AdController extends AbstractController
     }
 
     /**
+     * Affiche une annonce
      * @Route("/ads/{slug}", name="ad_show")
+     *
      */
     public function show( $slug, AdRepository $repo ){
 
@@ -103,10 +108,11 @@ class AdController extends AbstractController
         return $this->render( 'ad/show.html.twig', [ 'ad' => $ad ] );
     }
     /**
-     * Undocumented function
+     * Efface une annonce
      *
      * @Route("/ads/{slug}/delete", name="ad_delete")
      * @Security("is_granted('ROLE_USER') and user == ad.getAuthor()")
+     *
      * @param Ad $ad
      * @param ObjectManager $manager
      * @return Response

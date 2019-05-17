@@ -5,13 +5,15 @@
 {% block body %}
 <div class="container">
     <h1>Votre réservation N: {{ booking.id }}</h1>
+
     {% if app.request.query.get('withAlert') %}
         <div class="alert alert-success">
             <h4 class="alert-heading">Bravo !</h4>
             <p>Votre reservation aupres de {{ booking.ad.author.fullName }} a bien ete prise en compte.</p>
         </div>
     {% endif %}
-    <div class="col-5">
+    <div class="row">
+    <div class="col-6">
         <div class="alert alert-light">
             <h2>Detail</h2>
                 <dl class="row">
@@ -40,15 +42,15 @@
                     </div>
             </div>
             {{ booking.ad.author.description | raw }}
-             <a href="{{ path( 'user_show', { 'slug': booking.ad.author.slug } ) }}" class="btn btn-primary">Plus d'info sur {{ booking.ad.author.lastName }}</a>
+            <br><a href="{{ path( 'user_show', { 'slug': booking.ad.author.slug } ) }}" class="btn btn-primary">Plus d'info sur {{ booking.ad.author.lastName }}</a>
         </div>
     </div>
-        <div class="col">
+        <div class="col-6">
             <h2>Votre Hebergement</h2>
             <h4><a href="{{ path('ad_show', { 'slug': booking.ad.slug } ) }}" class=''>{{booking.ad.title}}</a></h4>
             <img src="{{ booking.ad.coverImage }}" alt="{{ booking.ad.title }}" class="img-fluid">
             {{ booking.ad.content | raw }}
-            <a href="{{ path('ad_show', { 'slug': booking.ad.slug }) }}" class="btn btn-rimary">Plus d'information</a>
+            <a href="{{ path('ad_show', { 'slug': booking.ad.slug }) }}" class="btn btn-primary">Plus d'information</a>
         </div>
     </div>
 </div>
