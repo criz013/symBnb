@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
+use App\Entity\Users;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +27,7 @@ class AdController extends AbstractController
         $ads = $repo->findAll();
         return $this->render( 'ad/index.html.twig', [ 'ads' => $ads ] );
     }
+
 
     /**
      * @Route("/ad/new", name="ad_new")
@@ -125,6 +127,4 @@ class AdController extends AbstractController
         $this->addFlash( 'sucess', "L'annonce <strong>{$ad->getTitle()}</strong> a ete bien supprimer! " );
         return $this->redirectToRoute( 'ads_index' );
     }
-
-
 }

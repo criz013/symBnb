@@ -1,4 +1,4 @@
-h1,h2,h3,h4{
+h2{
     color:black !important;
 }
 div.container{
@@ -33,4 +33,8 @@ div.carousel-caption{
 .avatar-mini{
     max-width: 24px;
     max-height: 24px;
+}
+
+span.rating i{
+    color: goldenrod;
 }

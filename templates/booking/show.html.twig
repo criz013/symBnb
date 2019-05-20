@@ -4,12 +4,12 @@
 
 {% block body %}
 <div class="container">
-    <h1>Votre réservation N: {{ booking.id }}</h1>
+    <h1>Votre réservation N° ({{ booking.id }})</h1>
 
     {% if app.request.query.get('withAlert') %}
         <div class="alert alert-success">
             <h4 class="alert-heading">Bravo !</h4>
-            <p>Votre reservation aupres de {{ booking.ad.author.fullName }} a bien ete prise en compte.</p>
+            <p>Votre reservation aupres de <strong>{{ booking.ad.author.fullName }}</strong> a bien été prise en compte.</p>
         </div>
     {% endif %}
     <div class="row">
@@ -26,12 +26,12 @@
                     <dt class="col-md-4">Nombre de nuit</dt>
                     <dd class="col-md-8">{{ booking.duration }}</dd>
                     <dt class="col-md-4">Montant Total</dt>
-                    <dd class="col-md-8">{{ booking.amount }}</dd>
+                    <dd class="col-md-8">{{ booking.amount }}  &euro;</dd>
                     <dt class="col-md-4">Commentaire</dt>
-                    <dd class="col-md-8">{{ booking.comment }}</dd>
+                    <dd class="col-md-8">{{ booking.comment | default('Aucun commentaire')}}</dd>
                 </dl>
                 <hr>
-                <h2 class="alert-heading">Votre hote</h2>
+                <h2 class="">Votre hote</h2>
             <div class="row mb-3">
                     <div class="col-3">
                         <img src="{{ booking.ad.author.picture }}" alt="Avatar de {{ booking.ad.author.fullName }}" class="avatar avatar-medium">
@@ -44,6 +44,26 @@
             {{ booking.ad.author.description | raw }}
             <br><a href="{{ path( 'user_show', { 'slug': booking.ad.author.slug } ) }}" class="btn btn-primary">Plus d'info sur {{ booking.ad.author.lastName }}</a>
         </div>
+        <div class="alert alert-light">
+                        <h2 class="alert-heading" id="comment">Votre avis compte !</h2>
+                       
+                            {% if date() > date(booking.endDate) %}
+                            {% set com = booking.ad.commentFromAuthor(app.user) %}
+                                {% if com is not null %}
+                                  <blockquote>
+                                    {{ com.content }}
+                                  </blockquote>
+                                  <strong>Note: </strong>{% include 'partials/rating.html.twig' with {'rating': com.rating } %}
+                                {% else %}
+                                    {{ form_start(form) }}
+                                    {{ form_widget(form) }}
+                                    <button type="submit" class="btn btn-success">Soumettre</button>
+                                    {{ form_end(form) }}
+                                {% endif %}
+                            {% else %}
+                            <p>Vous ne pouvez pas noter cette annonce pour le moment tant que votre voyage ne sera pas complet !</p> 
+                            {% endif %}
+                    </div>
     </div>
         <div class="col-6">
             <h2>Votre Hebergement</h2>
